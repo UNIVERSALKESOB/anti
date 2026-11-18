@@ -42,7 +42,7 @@ public class AboutScreen implements Screen {
         name.setPadding(0, Ui.dp(c, 12), 0, 0);
         id.addView(name, new LinearLayout.LayoutParams(-1, -2));
 
-        TextView version = Ui.text(c, "Version " + versionName(c) + " · 10 tools", 13, Ui.MUTED, false);
+        TextView version = Ui.text(c, "Version " + versionName(c) + " · 10 tools + settings", 13, Ui.MUTED, false);
         version.setGravity(Gravity.CENTER);
         version.setPadding(0, Ui.dp(c, 4), 0, 0);
         id.addView(version, new LinearLayout.LayoutParams(-1, -2));

@@ -315,7 +315,7 @@ public class CalculatorScreen implements Screen {
         try {
             double v = Expr.eval(balanced(src), degrees);
             if (Ui.valid(v)) {
-                previewView.setText("= " + Ui.fmt(v));
+                previewView.setText("= " + Ui.fmt(ctx, v));
                 previewView.setTextColor(Ui.ACCENT);
             } else {
                 previewView.setText(" ");
@@ -335,7 +335,7 @@ public class CalculatorScreen implements Screen {
             if (!Ui.valid(v)) {
                 throw new ArithmeticException("bad result");
             }
-            String out = Ui.fmt(v);
+            String out = Ui.fmt(ctx, v);
             historyView.setText(src + " =");
             HistoryStore.add(ctx, src, out);
             buf.setLength(0);

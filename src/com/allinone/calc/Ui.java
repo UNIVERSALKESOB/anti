@@ -235,14 +235,32 @@ public final class Ui {
 
     /** Formats a double for display without ugly floating point tails. */
     public static String fmt(double d) {
+        return fmt(null, d);
+    }
+
+    public static String fmt(Context c, double d) {
         if (Double.isNaN(d) || Double.isInfinite(d)) {
             return "Error";
         }
         if (Math.abs(d) < 1e-12) {
             d = 0;
         }
+        int dec = (c != null) ? SettingsPrefs.getDecimalPlaces(c) : -1;
+        boolean comma = (c == null) || SettingsPrefs.isCommaGroup(c);
+        if (dec >= 0) {
+            java.math.BigDecimal bd = java.math.BigDecimal.valueOf(d)
+                    .setScale(dec, java.math.RoundingMode.HALF_UP)
+                    .stripTrailingZeros();
+            String s = bd.toPlainString();
+            if (comma && s.indexOf('E') < 0) {
+                s = addCommas(s);
+            }
+            return s;
+        }
         if (d == Math.rint(d) && Math.abs(d) < 1e15) {
-            return String.valueOf((long) d);
+            String s = String.valueOf((long) d);
+            if (comma) s = addCommas(s);
+            return s;
         }
         double abs = Math.abs(d);
         if (abs >= 1e15 || abs < 1e-7) {
@@ -264,14 +282,44 @@ public final class Ui {
         java.math.BigDecimal bd = java.math.BigDecimal.valueOf(d)
                 .setScale(8, java.math.RoundingMode.HALF_UP)
                 .stripTrailingZeros();
-        return bd.toPlainString();
+        String s = bd.toPlainString();
+        if (comma) s = addCommas(s);
+        return s;
+    }
+
+    private static String addCommas(String num) {
+        if (num == null) return "0";
+        int dot = num.indexOf('.');
+        String intPart = dot >= 0 ? num.substring(0, dot) : num;
+        String fracPart = dot >= 0 ? num.substring(dot) : "";
+        boolean neg = intPart.startsWith("-");
+        if (neg) intPart = intPart.substring(1);
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (int i = intPart.length() - 1; i >= 0; i--) {
+            sb.append(intPart.charAt(i));
+            count++;
+            if (count == 3 && i > 0) { sb.append(','); count = 0; }
+        }
+        String out = sb.reverse().toString();
+        if (neg) out = "-" + out;
+        return out + fracPart;
     }
 
     public static String money(double d) {
+        return money(null, d);
+    }
+
+    public static String money(Context c, double d) {
         if (Double.isNaN(d) || Double.isInfinite(d)) {
             return "—";
         }
-        return String.format(Locale.US, "%,.2f", d);
+        int dec = (c != null) ? SettingsPrefs.getDecimalPlaces(c) : 2;
+        if (dec < 0) dec = 2;
+        boolean comma = (c == null) || SettingsPrefs.isCommaGroup(c);
+        String s = String.format(Locale.US, "%." + dec + "f", d);
+        if (comma) s = addCommas(s);
+        return s;
     }
 
     public static double parse(String s) {

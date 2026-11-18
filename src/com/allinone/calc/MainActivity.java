@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
     private static final String[] TABS = {
-            "Basic", "Scientific", "Units", "Currency", "BMI", "Loan", "Age", "Percent", "Tip", "Discount", "About"
+            "Basic", "Scientific", "Units", "Currency", "BMI", "Loan", "Age", "Percent", "Tip", "Discount", "Settings", "About"
     };
 
     private final Screen[] cache = new Screen[TABS.length];
@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         title.setLetterSpacing(-0.01f);
         box.addView(title);
 
-        TextView sub = Ui.text(this, "10 tools · currency rates cached offline", 12, Ui.MUTED, false);
+        TextView sub = Ui.text(this, "10 tools + settings · offline friendly", 12, Ui.MUTED, false);
         sub.setPadding(0, Ui.dp(this, 2), 0, 0);
         box.addView(sub);
         return box;
@@ -146,7 +146,8 @@ public class MainActivity extends Activity {
                 case 7: cache[i] = new PercentScreen(this); break;
                 case 8: cache[i] = new TipScreen(this); break;
                 case 9: cache[i] = new DiscountScreen(this); break;
-                default: cache[i] = new AboutScreen(this); break;
+                case 10: cache[i] = new SettingsScreen(this); break;
+            default: cache[i] = new AboutScreen(this); break;
             }
         }
         return cache[i];
